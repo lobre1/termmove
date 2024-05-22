@@ -66,56 +66,55 @@ int wrapCheck(){
 }
 
 void control( int c, int pos[],char grid[dimen[0]][dimen[1]]){
+	grid[pos[0]][pos[1]]=bg;
 	switch (c) {
 		case 'w':
 			pos[0]--;
-			if (wrapCheck()==0){
+			/*if (wrapCheck()==0){
 				grid[pos[0]][pos[1]]=person;
-				grid[pos[0]+1][pos[1]]=bg;
 			}else{
 				grid[0][pos[1]]=bg;
-			}
+			}*/
 			break;
 		case 's':
 			pos[0]++;
-			if (wrapCheck()==0){
+			/*if (wrapCheck()==0){
 				grid[pos[0]][pos[1]]=person;
-				grid[pos[0]-1][pos[1]]=bg;
 			}else{
 				grid[dimen[0]-1][pos[1]]=bg;
-			}
+			}*/
 			break;
 		case 'a':
 			pos[1]--;
-			if (wrapCheck()==0){
+			/*if (wrapCheck()==0){
 				grid[pos[0]][pos[1]]=person;
-				grid[pos[0]][pos[1]+1]=bg;
 			}else{
 				grid[pos[0]][0]=bg;
-			}
+			}*/
 			break;
 		case 'd':
 			pos[1]++;
-			if (wrapCheck()==0){
+			/*if (wrapCheck()==0){
 				grid[pos[0]][pos[1]]=person;
-				grid[pos[0]][pos[1]-1]=bg;
 			}else{
 				grid[pos[0]][dimen[1]-1]=bg;
-			}
+			}*/
 			break;
 		case 'q':
 			endwin();
 			exit(0);
 			break;
 	}
+	wrapCheck();
+	grid[pos[0]][pos[1]]=person;
 }
 
 void init(){
 	getmaxyx(stdscr,dimen[0],dimen[1]);
 	dimen[0]--;
 	dimen[1]--;
-	pos[0]=(dimen[0]-1)/2;
-	pos[1]=(dimen[1]-1)/2;
+	pos[0]=(dimen[0])/2;
+	pos[1]=(dimen[1])/2;
 
 }
 
