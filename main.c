@@ -10,7 +10,6 @@ const char person='@';
 
 int dimen[2] = {50,100};
 int pos[2];
-int i=1;
 
 void boardInit(char grid[dimen[0]][dimen[1]]){
 	for (int i=0; i<dimen[0]; i++) {
@@ -97,32 +96,37 @@ void init(){
 	pos[1]=(dimen[1])/2;
 }
 
-int main(int argc, char **argv){
-	char *err = malloc(256);
-	initscr();
-	start_color();
+char * argHandling( int argc, char **argv){
 	switch (argc) {
 		case 3:
 			dimen[1]=atoi(argv[2]);
 			dimen[0]=atoi(argv[1]);
 			if (dimen[1] < 0 && dimen[0] < 0) {
 				init();
-				err="Dimensions should be >0, Defaulting to full terminal.";
+				return"Dimensions should be >0, Defaulting to full terminal.";
 			}else{
 				pos[0]=(dimen[0]-1)/2;
 				pos[1]=(dimen[1]-1)/2;
-				err=" ";
+				return" ";
 			}
 			break;
 		case 1:
 				init();
-				err="";
+				return" ";
 			break;
 		default:
-			err="Invalid number of arguments, Defaulting to full terminal";
 			init();
+			return"Invalid number of arguments, Defaulting to full terminal";
 			break;
 	}
+	return" ";
+}
+
+int main(int argc, char **argv){
+	char *err = malloc(256);
+	initscr();
+	start_color();
+	err = argHandling(argc, argv);
 	char grid[dimen[0]][dimen[1]];
 	boardInit(grid);
 	cbreak();
@@ -136,6 +140,7 @@ int main(int argc, char **argv){
 		int c = getch();
 		control(c, pos, grid);
 	}
+	free(err);
 	endwin();
 	return 0;
 }
