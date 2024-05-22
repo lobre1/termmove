@@ -2,7 +2,7 @@
 A simple 2D movement script\
 ```sh
 ./termmove.c int int
-```\
+```
 | TODO |
 | :---: |
 | Create Obstacles |
