@@ -70,35 +70,15 @@ void control( int c, int pos[],char grid[dimen[0]][dimen[1]]){
 	switch (c) {
 		case 'w':
 			pos[0]--;
-			/*if (wrapCheck()==0){
-				grid[pos[0]][pos[1]]=person;
-			}else{
-				grid[0][pos[1]]=bg;
-			}*/
 			break;
 		case 's':
 			pos[0]++;
-			/*if (wrapCheck()==0){
-				grid[pos[0]][pos[1]]=person;
-			}else{
-				grid[dimen[0]-1][pos[1]]=bg;
-			}*/
 			break;
 		case 'a':
 			pos[1]--;
-			/*if (wrapCheck()==0){
-				grid[pos[0]][pos[1]]=person;
-			}else{
-				grid[pos[0]][0]=bg;
-			}*/
 			break;
 		case 'd':
 			pos[1]++;
-			/*if (wrapCheck()==0){
-				grid[pos[0]][pos[1]]=person;
-			}else{
-				grid[pos[0]][dimen[1]-1]=bg;
-			}*/
 			break;
 		case 'q':
 			endwin();
@@ -115,7 +95,6 @@ void init(){
 	dimen[1]--;
 	pos[0]=(dimen[0])/2;
 	pos[1]=(dimen[1])/2;
-
 }
 
 int main(int argc, char **argv){
