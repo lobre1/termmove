@@ -1,5 +1,5 @@
 # termmove
-A simple 2D movement script\
+A simple 2D movement script
 ```sh
 ./termmove.c int int
 ```
