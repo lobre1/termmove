@@ -2,37 +2,36 @@
 #include <stdlib.h>
 #include <curses.h>
 #include <math.h>
-
-int H = 50;
-int W = 100;
+#include <string.h>
 
 const char bg = ' ';
 const char person='@';
 
-//char grid[H][W];
+
+int dimen[2] = {50,100};
 int pos[2];
 int i=1;
 
-void boardInit(char grid[H][W]){
-	for (int i=0; i<H; i++) {
-		for (int j=0; j<W; j++) {
+void boardInit(char grid[dimen[0]][dimen[1]]){
+	for (int i=0; i<dimen[0]; i++) {
+		for (int j=0; j<dimen[1]; j++) {
 			grid[i][j]=bg;
 		}
 	}
 	grid[pos[0]][pos[1]]=person;
 }
 
-void boardPrint(char grid[H][W]){
-  init_pair(1, COLOR_GREEN, COLOR_BLACK);
-  init_pair(2, COLOR_RED, COLOR_RED);
-	for (int i=0; i<H; i++) {
-		for (int j=0; j<W; j++) {
+void boardPrint(char grid[dimen[0]][dimen[1]], char err[]){
+  init_pair(1, COLOR_RED, COLOR_RED);
+  init_pair(2, COLOR_WHITE, COLOR_RED);
+	for (int i=0; i<dimen[0]; i++) {
+		for (int j=0; j<dimen[1]; j++) {
 			if(i == pos[0] && j == pos[1]){
-				attron(COLOR_PAIR(2));
+				attron(COLOR_PAIR(1));
 				addch(grid[i][j]);
+				attroff(COLOR_PAIR(1));
 			}
 			else{
-				attron(COLOR_PAIR(1));
 				addch(grid[i][j]);
 			}
 		}
@@ -40,29 +39,33 @@ void boardPrint(char grid[H][W]){
 	}
 	printw("X:%d", pos[1]);
 	printw(" Y:%d", pos[0]);
+	printw("     ");
+	attron(COLOR_PAIR(2));
+	printw("%s", err);
+	attroff(COLOR_PAIR(2));
 }
 
 int wrapCheck(){
-	if (pos[0] == H) {
+	if (pos[0] == dimen[0]) {
 		pos[0]=0;
 		return 1;
 	}
 	if (pos[0] < 0) {
-		pos[0]=H-1;
+		pos[0]=dimen[0]-1;
 		return 1;
 	}
-	if (pos[1] == W) {
+	if (pos[1] == dimen[1]) {
 		pos[1]=0;
 		return 1;
 	}
 	if (pos[1] < 0) {
-		pos[1]=W-1;
+		pos[1]=dimen[1]-1;
 		return 1;
 	}
 	return 0;
 }
 
-void control( int c, int pos[],char grid[H][W]){
+void control( int c, int pos[],char grid[dimen[0]][dimen[1]]){
 	switch (c) {
 		case 'w':
 			pos[0]--;
@@ -79,7 +82,7 @@ void control( int c, int pos[],char grid[H][W]){
 				grid[pos[0]][pos[1]]=person;
 				grid[pos[0]-1][pos[1]]=bg;
 			}else{
-				grid[H-1][pos[1]]=bg;
+				grid[dimen[0]-1][pos[1]]=bg;
 			}
 			break;
 		case 'a':
@@ -97,25 +100,52 @@ void control( int c, int pos[],char grid[H][W]){
 				grid[pos[0]][pos[1]]=person;
 				grid[pos[0]][pos[1]-1]=bg;
 			}else{
-				grid[pos[0]][W-1]=bg;
+				grid[pos[0]][dimen[1]-1]=bg;
 			}
 			break;
 		case 'q':
+			endwin();
 			exit(0);
 			break;
 	}
 }
 
-int main(){
-  int col, row;
+void init(){
+	getmaxyx(stdscr,dimen[0],dimen[1]);
+	dimen[0]--;
+	dimen[1]--;
+	pos[0]=(dimen[0]-1)/2;
+	pos[1]=(dimen[1]-1)/2;
+
+}
+
+int main(int argc, char **argv){
+	char *err = malloc(256);
 	initscr();
 	start_color();
-	getmaxyx(stdscr,row,col);
-	H = row-1;
-	W = col-1;
-	pos[0]=H/2;
-	pos[1]=W/2;
-	char grid[H][W];
+	switch (argc) {
+		case 3:
+			dimen[1]=atoi(argv[2]);
+			dimen[0]=atoi(argv[1]);
+			if (dimen[1] < 0 && dimen[0] < 0) {
+				init();
+				err="Dimensions should be >0, Defaulting to full terminal.";
+			}else{
+				pos[0]=(dimen[0]-1)/2;
+				pos[1]=(dimen[1]-1)/2;
+				err=" ";
+			}
+			break;
+		case 1:
+				init();
+				err="";
+			break;
+		default:
+			err="Invalid number of arguments, Defaulting to full terminal";
+			init();
+			break;
+	}
+	char grid[dimen[0]][dimen[1]];
 	boardInit(grid);
 	cbreak();
 	noecho();
@@ -123,7 +153,7 @@ int main(){
 
 	while (1) {
 		clear();
-		boardPrint(grid);
+		boardPrint(grid, err);
 		refresh();
 		int c = getch();
 		control(c, pos, grid);
