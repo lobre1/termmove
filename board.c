@@ -2,10 +2,16 @@
 #include <curses.h>
 
 
-void boardInit(int pos[2], int dimen[2], char grid[dimen[0]][dimen[1]], char bg, char person){
+void boardInit(int pos[2], int dimen[2], char grid[dimen[0]][dimen[1]], char person){
 	for (int i=0; i<dimen[0]; i++) {
 		for (int j=0; j<dimen[1]; j++) {
-			grid[i][j]=bg;
+			grid[i][j]=' ';
+			if (i == 0 || i == dimen[0]-1){
+				grid[i][j]='-';
+			}
+			if (j == 0 || j == dimen[1]-1){
+				grid[i][j]='|';
+			}
 		}
 	}
 	grid[pos[0]][pos[1]]=person;
