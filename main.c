@@ -1,6 +1,7 @@
+#include "board.h"
+#include "control.h"
 #include <stdlib.h>
 #include <curses.h>
-#include "board.h"
 
 const char bg = ' ';
 const char person='@';
@@ -28,49 +29,6 @@ void barrierInit( struct tuple barCoord[10], char grid[dimen[0]][dimen[1]] ){
 	}
 }*/
 
-int wrapCheck(){
-	if (pos[0] == dimen[0]) {
-		pos[0]=0;
-		return 1;
-	}
-	if (pos[0] < 0) {
-		pos[0]=dimen[0]-1;
-		return 1;
-	}
-	if (pos[1] == dimen[1]) {
-		pos[1]=0;
-		return 1;
-	}
-	if (pos[1] < 0) {
-		pos[1]=dimen[1]-1;
-		return 1;
-	}
-	return 0;
-}
-
-void control( int c, int pos[],char grid[dimen[0]][dimen[1]]){
-	grid[pos[0]][pos[1]]=bg;
-	switch (c) {
-		case 'w':
-			pos[0]--;
-			break;
-		case 's':
-			pos[0]++;
-			break;
-		case 'a':
-			pos[1]--;
-			break;
-		case 'd':
-			pos[1]++;
-			break;
-		case 'q':
-			endwin();
-			exit(0);
-			break;
-	}
-	wrapCheck();
-	grid[pos[0]][pos[1]]=person;
-}
 
 void init(){
 	getmaxyx(stdscr,dimen[0],dimen[1]);
@@ -122,7 +80,7 @@ int main(int argc, char **argv){
 		boardPrint(pos,dimen,grid,err);
 		refresh();
 		int c = getch();
-		control(c, pos, grid);
+		controlHandler(c, pos, dimen, grid, bg, person);
 	}
 	free(err);
 	endwin();
