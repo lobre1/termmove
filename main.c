@@ -1,48 +1,32 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <curses.h>
-#include <math.h>
-#include <string.h>
+#include "board.h"
 
 const char bg = ' ';
 const char person='@';
+const char barrier='#';
 
 
-int dimen[2] = {50,100};
+int dimen[2] = {50,100}; 
 int pos[2];
 
-void boardInit(char grid[dimen[0]][dimen[1]]){
-	for (int i=0; i<dimen[0]; i++) {
-		for (int j=0; j<dimen[1]; j++) {
-			grid[i][j]=bg;
-		}
-	}
-	grid[pos[0]][pos[1]]=person;
-}
+char barrierChar;
 
-void boardPrint(char grid[dimen[0]][dimen[1]], char err[]){
-  init_pair(1, COLOR_RED, COLOR_RED);
-  init_pair(2, COLOR_WHITE, COLOR_RED);
-	for (int i=0; i<dimen[0]; i++) {
-		for (int j=0; j<dimen[1]; j++) {
-			if(i == pos[0] && j == pos[1]){
-				attron(COLOR_PAIR(1));
-				addch(grid[i][j]);
-				attroff(COLOR_PAIR(1));
-			}
-			else{
-				addch(grid[i][j]);
-			}
+/*struct tuple{
+	int x;
+	int y;
+};
+
+struct tuple barriers[10];
+
+void barrierInit( struct tuple barCoord[10], char grid[dimen[0]][dimen[1]] ){
+	for (int i=0; i<10; i++) {
+		if (barCoord[i].y<dimen[0] && barCoord[i].x<dimen[1]){
+			grid[barCoord[i].y][barCoord[i].x]='#';
+
 		}
-		addstr("\n");
 	}
-	printw("X:%d", pos[1]);
-	printw(" Y:%d", pos[0]);
-	printw("     ");
-	attron(COLOR_PAIR(2));
-	printw("%s", err);
-	attroff(COLOR_PAIR(2));
-}
+}*/
 
 int wrapCheck(){
 	if (pos[0] == dimen[0]) {
@@ -128,14 +112,14 @@ int main(int argc, char **argv){
 	start_color();
 	err = argHandling(argc, argv);
 	char grid[dimen[0]][dimen[1]];
-	boardInit(grid);
+	boardInit(pos, dimen, grid, bg, person);
 	cbreak();
 	noecho();
 	keypad(stdscr, TRUE);
 
 	while (1) {
 		clear();
-		boardPrint(grid, err);
+		boardPrint(pos,dimen,grid,err);
 		refresh();
 		int c = getch();
 		control(c, pos, grid);
